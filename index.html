@@ -4,38 +4,46 @@
     <meta charset="UTF-8">
     <title>Pixi Bitmap Text Font Editor</title>
     <link rel="stylesheet" href="styles/style.css">
+    <script src="scripts/index.js" type="module"></script>
 </head>
 <body>
     <div class="header">
         <h1>Pixi Bitmap Text Font Editor</h1>
     </div>
     <div class="content">
-        <div class="leftPanel">
-            <div class="fileManagementPanel panel">
-                file Management panel
+        <div class="left side">
+            <div class="inputOutputData panel">
+                <div class="inputPanel">
+                    <label for="textureAtlasInput">Upload Texture Atlas: </label>
+                    <input type="file" class="fileInput" id="textureAtlasInput" accept=".png, .jpg">
+                </div>
+                <div class="inputPanel">
+                    <label for="xmlInput">Upload XML file:</label>
+                    <input type="file" class="fileInput" id="xmlInput" accept=".xml">
+                </div>
+                <div class="inputPanel">
+                    <label for="colorInput">Background Colour: </label>
+                    <input type="color" id="colorInput" value="#003f3f">
+                </div>
+                <div class="inputPanel">
+                    <label for="textInput">Text Input:</label>
+                    <input type="text" id="textInput" value="123,456.1890">
+                </div>
             </div>
-            <div class="textInputPanel panel">
-                text input panel
-            </div>
-            <div class="xmlVisualEditorPanel panel">
+            <div class="xmlVisualEditor panel">
                 xml visual editor panel
             </div>
-        </div>
-        <div class="mainPanel">
-            <div class="pixiViewPanel panel">
-                pixi view panel
-            </div>
-            <div class="xmlEditorPanel panel">
-                <label for="xmlEditorTextArea">xml text here:</label>
-                <textarea name="xmlTextArea" id="xmlEditorTextArea" cols="30" rows="10"></textarea>
-            </div>
-        </div>
-        <div class="rightPanel">
-            <div class="textureAtlasPanel panel">
+            <div class="textureAtlas">
                 texture atlas
                 <img src="" alt="texture atlas image here">
             </div>
-            <div class="xmlTreeViewPanel"></div>
+        </div>
+        <div class="main">
+            <div class="pixiView" id="pixiContainer"></div>
+            <div class="xmlEditor panel">
+                <label for="xmlEditorTextArea">xml editor:</label>
+                <textarea name="xmlTextArea" id="xmlEditorTextArea" cols="30" rows="10"></textarea>
+            </div>
         </div>
     </div>
 </body>
