@@ -30,7 +30,7 @@ const inputs = {
 }
 
 const outputs = {
-    xml: document.getElementById('xmlTextArea'),
+    xml: document.getElementById('xmlEditorTextArea'),
     textureAtlas: document.getElementById('textureAtlasOutput')
 }
 
@@ -70,6 +70,8 @@ function submitInputValues() {
     exampleText = inputs.text.value
 
     app.renderer.background.color = colour
+
+    outputs.xml.value = getXML(xmlFile)
 }
 
 function addPlaceholderText(app) {
@@ -85,6 +87,18 @@ function centerComponent (component, app) {
     component.y = app.screen.height / 2
 
     return component
+}
+
+function getXML(file) {
+    const reader = new FileReader()
+    const xmlText = reader.readAsText(file)
+
+    reader.onloadend = function(){
+        xmlData = reader.result
+        outputs.xml.value = xmlData
+    }
+    
+    return ''
 }
 
 // Call the function when the page loads

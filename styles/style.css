@@ -44,12 +44,6 @@ body {
     flex-direction: column;
 }
 
-.left {
-}
-
-.right {
-}
-
 .main {
     flex: 3;
 }
