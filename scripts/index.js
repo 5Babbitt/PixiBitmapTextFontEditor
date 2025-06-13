@@ -61,6 +61,7 @@ async function startPixi() {
     app.stage.addChild(addPlaceholderText(app))
 }
 
+// TODO: parse XML
 function submitInputValues() {
     const imgFile = inputs.img.files[0]
     const xmlFile = inputs.xml.files[0]
