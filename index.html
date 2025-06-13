@@ -15,27 +15,25 @@
             <div class="inputOutputData panel">
                 <div class="inputPanel">
                     <label for="textureAtlasInput">Upload Texture Atlas: </label>
-                    <input type="file" class="fileInput" id="textureAtlasInput" accept=".png, .jpg">
+                    <input type="file" class="fileInput" id="textureAtlasInput" accept="image/png">
                 </div>
                 <div class="inputPanel">
                     <label for="xmlInput">Upload XML file:</label>
-                    <input type="file" class="fileInput" id="xmlInput" accept=".xml">
+                    <input type="file" class="fileInput" id="xmlInput" accept="text/xml">
                 </div>
                 <div class="inputPanel">
-                    <label for="colorInput">Background Colour: </label>
-                    <input type="color" id="colorInput" value="#003f3f">
+                    <label for="colourInput">Background Colour: </label>
+                    <input type="color" id="colourInput" value="#003f3f">
                 </div>
                 <div class="inputPanel">
                     <label for="textInput">Text Input:</label>
-                    <input type="text" id="textInput" value="123,456.1890">
+                    <input type="text" id="textInput" value="0123456789.,">
                 </div>
-            </div>
-            <div class="xmlVisualEditor panel">
-                xml visual editor panel
+                <button class="submitButton" id="submit">Submit</button>
             </div>
             <div class="textureAtlas">
                 texture atlas
-                <img src="" alt="texture atlas image here">
+                <img id="textureAtlasOutput" src="" alt="texture atlas image here">
             </div>
         </div>
         <div class="main">

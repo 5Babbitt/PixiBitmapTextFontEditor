@@ -19,9 +19,25 @@ import {Application, Text} from 'https://cdn.jsdelivr.net/npm/pixi.js@8.0.0/dist
 
 let xmlData = undefined
 let textureAtlas = undefined
+let exampleText = ''
+
+const inputs = {
+    img: document.getElementById('textureAtlasInput'),
+    xml: document.getElementById('xmlInput'),
+    colour: document.getElementById('colourInput'),
+    text: document.getElementById('textInput'),
+    submit: document.getElementById('submit')
+}
+
+const outputs = {
+    xml: document.getElementById('xmlTextArea'),
+    textureAtlas: document.getElementById('textureAtlasOutput')
+}
+
+let app = undefined
 
 async function startPixi() {
-    const app = new Application()
+    app = new Application()
     console.log('App created')
 
     const canvas = document.getElementById('pixiContainer')
@@ -32,7 +48,7 @@ async function startPixi() {
     }
 
     await app.init({
-        background: getBGColour(),
+        background: inputs.colour.value,
         resizeTo: canvas,
         height: canvas.offsetHeight,
         width: canvas.offsetWidth,
@@ -41,16 +57,23 @@ async function startPixi() {
 
     canvas.appendChild(app.canvas)
 
-    app.stage.addChild(addBasicText(app))
+    console.log(inputs.img.file)
+    app.stage.addChild(addPlaceholderText(app))
 }
 
-function submitData () {
+function submitInputValues() {
+    const imgFile = inputs.img.files[0]
+    const xmlFile = inputs.xml.files[0]
+    const colour = inputs.colour.value
 
+    exampleText = inputs.text.value
+
+    app.renderer.background.color = colour
 }
 
-function addBasicText(app) {
+function addPlaceholderText(app) {
     const basicText = new Text({ text: 'Waiting for texture atlas and xml upload' })
-    return centerComponent(basicText, app);
+    return centerComponent(basicText, app)
 }
 
 function centerComponent (component, app) {
@@ -63,9 +86,8 @@ function centerComponent (component, app) {
     return component
 }
 
-function getBGColour () {
-    return document.getElementById('colorInput').value
-}
-
 // Call the function when the page loads
-await window.addEventListener('load', startPixi);
+await window.addEventListener('load', startPixi)
+
+// Input Events
+inputs.submit.addEventListener('click', submitInputValues)
