@@ -9,6 +9,7 @@
  * [X] xml upload, view
  * [ ] xml parsing
  * [ ] xml edit, save, download
+ * [ ] reset pixi scene
  * [ ] get font family name from xml file
  */
 
