@@ -92,13 +92,18 @@ body {
 
 .textureAtlas {
     background-color: var(--textureAtlasCol);
+    display: flex; 
+    padding: 1em;
     flex: 1;
     justify-content: center;
     align-items: center;
 }
 
 .textureAtlas img {
-    flex: 1;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    box-shadow: 2px 2px 0.5rem 0.0625rem var(--bgCol);
 }
 
 .textInput {
