@@ -6,12 +6,14 @@
  * [X] import pixi
  * [X] pixi viewport
  * [ ] image upload and display
- * [ ] xml upload, parse, view
+ * [ ] xml upload, view
+ * [ ] xml parsing
  * [ ] xml edit, save, download
  */
 
 /**
  * Nice to haves
+ * [ ] XML syntax hightlighting
  * [ ] upload background images
   */
 
@@ -57,7 +59,6 @@ async function startPixi() {
 
     canvas.appendChild(app.canvas)
 
-    console.log(inputs.img.file)
     app.stage.addChild(addPlaceholderText(app))
 }
 
@@ -66,18 +67,24 @@ async function submitInputValues() {
     const imgFile = inputs.img.files[0]
     const xmlFile = inputs.xml.files[0]
     const colour = inputs.colour.value
+    const previewText = inputs.text.value
 
-    exampleText = inputs.text.value
+    // Preview text
+    exampleText = previewText
 
+    // Background
+    setAppBackground(colour)
+
+    // XML text display
+    outputs.xml.value = await getXML(xmlFile)
+
+    // Texture Atlas Display
+    outputs.textureAtlas.src = await getImage(imgFile)
+    console.log(imgFile)
+}
+
+function setAppBackground(colour) {
     app.renderer.background.color = colour
-
-    try {
-        xmlData = await getXML(xmlFile)
-    } catch (error) {
-        xmlData = `Error: Unable to load xml file\n${error}`
-    }
-
-    outputs.xml.value = xmlData
 }
 
 function addPlaceholderText(app) {
@@ -96,12 +103,12 @@ function centerComponent (component, app) {
 }
 
 async function getXML(file) {
-    return new Promise((resolve, reject) => {
+    try {
+        return new Promise((resolve, reject) => {
         const reader = new FileReader()
 
         reader.onload = (event) => {
             xmlData = event.target.result
-            outputs.xml.value = xmlData
             resolve(xmlData)
         }
 
@@ -109,6 +116,28 @@ async function getXML(file) {
 
         reader.readAsText(file)
     })
+    } catch (error) {
+        return `Error: Unable to load xml file\n${error}`
+    }
+}
+
+async function getImage(file) {
+    try {
+        return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+
+        reader.onload = (event) => {
+            const image = event.target.result
+            resolve(image)
+        }
+
+        reader.onerror = () => reject(new Error('Failed to read file'))
+
+        reader.readAsDataURL(file)
+    })
+    } catch (error) {
+        return `Error: Unable to load image file\n${error}`
+    }
 }
 
 // Call the function when the page loads
