@@ -62,7 +62,7 @@ async function startPixi() {
 }
 
 // TODO: parse XML
-function submitInputValues() {
+async function submitInputValues() {
     const imgFile = inputs.img.files[0]
     const xmlFile = inputs.xml.files[0]
     const colour = inputs.colour.value
@@ -71,7 +71,13 @@ function submitInputValues() {
 
     app.renderer.background.color = colour
 
-    outputs.xml.value = getXML(xmlFile)
+    try {
+        xmlData = await getXML(xmlFile)
+    } catch (error) {
+        xmlData = `Error: Unable to load xml file\n${error}`
+    }
+
+    outputs.xml.value = xmlData
 }
 
 function addPlaceholderText(app) {
@@ -89,16 +95,20 @@ function centerComponent (component, app) {
     return component
 }
 
-function getXML(file) {
-    const reader = new FileReader()
-    const xmlText = reader.readAsText(file)
+async function getXML(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
 
-    reader.onloadend = function(){
-        xmlData = reader.result
-        outputs.xml.value = xmlData
-    }
-    
-    return ''
+        reader.onload = (event) => {
+            xmlData = event.target.result
+            outputs.xml.value = xmlData
+            resolve(xmlData)
+        }
+
+        reader.onerror = () => reject(new Error('Failed to read file'))
+
+        reader.readAsText(file)
+    })
 }
 
 // Call the function when the page loads
