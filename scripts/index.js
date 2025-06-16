@@ -5,10 +5,11 @@
  * TODO:
  * [X] import pixi
  * [X] pixi viewport
- * [ ] image upload and display
- * [ ] xml upload, view
+ * [X] image upload and display
+ * [X] xml upload, view
  * [ ] xml parsing
  * [ ] xml edit, save, download
+ * [ ] get font family name from xml file
  */
 
 /**
@@ -17,7 +18,7 @@
  * [ ] upload background images
   */
 
-import {Application, Text} from 'https://cdn.jsdelivr.net/npm/pixi.js@8.0.0/dist/pixi.mjs'
+import {Application, Assets, Text, BitmapText} from 'https://cdn.jsdelivr.net/npm/pixi.js@8.0.0/dist/pixi.mjs'
 
 let xmlData = undefined
 let textureAtlas = undefined
@@ -62,7 +63,6 @@ async function startPixi() {
     app.stage.addChild(addPlaceholderText(app))
 }
 
-// TODO: parse XML
 async function submitInputValues() {
     const imgFile = inputs.img.files[0]
     const xmlFile = inputs.xml.files[0]
@@ -76,11 +76,24 @@ async function submitInputValues() {
     setAppBackground(colour)
 
     // XML text display
-    outputs.xml.value = await getXML(xmlFile)
+    outputs.xml.value = await getXMLText(xmlFile)
 
     // Texture Atlas Display
     outputs.textureAtlas.src = await getImage(imgFile)
-    console.log(imgFile)
+
+    // Load BitmapText
+    await Assets.load(xmlData)
+
+    const bitmapFontText = new BitmapText({
+        text: previewText,
+        style: {
+            fontFamily: 'Desyrel',
+            fontSize: 55,
+            align: 'left',
+        },
+    })
+
+    app.stage.addChild(centerComponent(bitmapFontText, app))
 }
 
 function setAppBackground(colour) {
@@ -102,7 +115,7 @@ function centerComponent (component, app) {
     return component
 }
 
-async function getXML(file) {
+async function getXMLText(file) {
     try {
         return new Promise((resolve, reject) => {
         const reader = new FileReader()
@@ -141,7 +154,7 @@ async function getImage(file) {
 }
 
 // Call the function when the page loads
-await window.addEventListener('load', startPixi)
+window.addEventListener('load', startPixi)
 
 // Input Events
 inputs.submit.addEventListener('click', submitInputValues)
