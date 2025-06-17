@@ -1,5 +1,10 @@
-// claude generated guidelines here: https://claude.ai/chat/68d14a27-3968-4b86-be9c-43a2a3e17ea7
-// pixi example here: https://pixijs.com/8.x/examples/text/bitmap-text
+/**
+ * REFERENCE LINKS
+ * claude generated guidelines here: https://claude.ai/chat/68d14a27-3968-4b86-be9c-43a2a3e17ea7
+ * pixi example here: https://pixijs.com/8.x/examples/text/bitmap-text
+ * Syntax highlight text area: https://css-tricks.com/creating-an-editable-textarea-that-supports-syntax-highlighted-code/
+ * BitmapFont docs: https://pixijs.download/release/docs/text.BitmapFont.html
+ */
 
 /**
  * TODO:
@@ -38,6 +43,11 @@ const outputs = {
     textureAtlas: document.getElementById('textureAtlasOutput')
 }
 
+const fileTypes = {
+    IMG: 'image',
+    XML: 'xml'
+}
+
 let app = undefined
 
 async function startPixi() {
@@ -47,7 +57,7 @@ async function startPixi() {
     const canvas = document.getElementById('pixiContainer')
 
     if (!canvas) {
-        console.error('No element found with ID "pixiCanvas"')
+        console.error('No element found with ID "pixiContainer"')
         return
     }
 
@@ -77,20 +87,24 @@ async function submitInputValues() {
     setAppBackground(colour)
 
     // XML text display
-    outputs.xml.value = await getXMLText(xmlFile)
+    outputs.xml.value = await getFileData(xmlFile, fileTypes.XML)
 
     // Texture Atlas Display
-    outputs.textureAtlas.src = await getImage(imgFile)
+    outputs.textureAtlas.src = await getFileData(imgFile, fileTypes.IMG)
+
+    // Clear Pixi Canvas
+
 
     // Load BitmapText
-    await Assets.load(xmlData)
+    const exampleFont = await Assets.load('./src/desyrel.xml')
+    const fontXML = await Assets.load(await getFileData(xmlFile, fileTypes.XML, true))
 
     const bitmapFontText = new BitmapText({
-        text: previewText,
+        text: exampleText,
         style: {
             fontFamily: 'Desyrel',
             fontSize: 55,
-            align: 'left',
+            align: 'center',
         },
     })
 
@@ -116,41 +130,40 @@ function centerComponent (component, app) {
     return component
 }
 
-async function getXMLText(file) {
+async function getFileData(file, type, returnURL = false) {
     try {
         return new Promise((resolve, reject) => {
         const reader = new FileReader()
 
         reader.onload = (event) => {
-            xmlData = event.target.result
-            resolve(xmlData)
+            switch (type) {
+                case fileTypes.IMG:
+                    textureAtlas = event.target.result
+                    resolve(textureAtlas)
+                    break
+                case fileTypes.XML:
+                    xmlData = event.target.result
+                    resolve(xmlData)     
+                    break
+            }
         }
 
         reader.onerror = () => reject(new Error('Failed to read file'))
-
-        reader.readAsText(file)
-    })
-    } catch (error) {
-        return `Error: Unable to load xml file\n${error}`
-    }
-}
-
-async function getImage(file) {
-    try {
-        return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-
-        reader.onload = (event) => {
-            const image = event.target.result
-            resolve(image)
+        
+        switch (type) {
+            case fileTypes.IMG:
+                reader.readAsDataURL(file)
+                break
+            case fileTypes.XML:
+                returnURL ? reader.readAsDataURL(file) : reader.readAsText(file)
+                break
+            default:
+                reject(new Error('Failed to read file'))
+                break
         }
-
-        reader.onerror = () => reject(new Error('Failed to read file'))
-
-        reader.readAsDataURL(file)
     })
     } catch (error) {
-        return `Error: Unable to load image file\n${error}`
+        return `Error: Unable to load ${type} file\n${error}`
     }
 }
 
