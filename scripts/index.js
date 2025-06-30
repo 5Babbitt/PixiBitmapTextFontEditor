@@ -97,16 +97,13 @@ async function submitInputValues() {
     outputs.xml.value = xmlString
     outputs.textureAtlas.src = img
 
-    // Create Bitmap Font
-    const bitmapFont = null
-
     // Load example BitmapText
-    await Assets.load('src/desyrel.xml')
+    await Assets.load('src/FNTBaseBonus01a.xml')
 
-    const bitmapFontText = bitmapFont ? new BitmapText(bitmapFont) : new BitmapText({
+    const bitmapFontText = new BitmapText({
         text: previewText,
         style: {
-            fontFamily: 'Desyrel',
+            fontFamily: 'FNTBaseBonus01a',
             fontSize: 55,
             align: 'center',
         },
