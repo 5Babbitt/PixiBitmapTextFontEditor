@@ -24,11 +24,14 @@
  * [ ] upload background images
   */
 
-import {Application, Assets, Text, BitmapText} from 'https://cdn.jsdelivr.net/npm/pixi.js@8.0.0/dist/pixi.mjs'
+import {Application, Assets, Text, BitmapText, BitmapFont, Texture} from 'https://cdn.jsdelivr.net/npm/pixi.js@8.0.0/dist/pixi.mjs'
 
 let xmlData = undefined
 let textureAtlas = undefined
 let exampleText = ''
+
+// PIXI variables
+let pixiTexture
 
 const inputs = {
     img: document.getElementById('textureAtlasInput'),
@@ -87,21 +90,21 @@ async function submitInputValues() {
     clearPixiCanvas(app)
     setAppBackground(colour)
 
-    // XML text display
-    outputs.xml.value = await getFileData(xmlFile, fileTypes.XML)
+    // XML text & texture atlas display
+    const xmlString = await getFileData(xmlFile, fileTypes.XML)
+    const img = URL.createObjectURL(imgFile)
 
-    // Texture Atlas Display
-    outputs.textureAtlas.src = await getFileData(imgFile, fileTypes.IMG)
+    outputs.xml.value = xmlString
+    outputs.textureAtlas.src = img
 
-    // Clear Pixi Canvas
+    // Create Bitmap Font
+    const bitmapFont = null
 
+    // Load example BitmapText
+    await Assets.load('src/desyrel.xml')
 
-    // Load BitmapText
-    const exampleFont = await Assets.load('./src/desyrel.xml')
-    const fontXML = await Assets.load(await getFileData(xmlFile, fileTypes.XML, true))
-
-    const bitmapFontText = new BitmapText({
-        text: exampleText,
+    const bitmapFontText = bitmapFont ? new BitmapText(bitmapFont) : new BitmapText({
+        text: previewText,
         style: {
             fontFamily: 'Desyrel',
             fontSize: 55,
@@ -135,7 +138,7 @@ function centerComponent (component, app) {
     return component
 }
 
-async function getFileData(file, type, returnURL = false) {
+async function getFileData(file, type) {
     try {
         return new Promise((resolve, reject) => {
         const reader = new FileReader()
@@ -160,7 +163,7 @@ async function getFileData(file, type, returnURL = false) {
                 reader.readAsDataURL(file)
                 break
             case fileTypes.XML:
-                returnURL ? reader.readAsDataURL(file) : reader.readAsText(file)
+                reader.readAsText(file)
                 break
             default:
                 reject(new Error('Failed to read file'))
