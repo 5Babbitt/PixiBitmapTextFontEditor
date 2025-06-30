@@ -83,7 +83,8 @@ async function submitInputValues() {
     // Preview text
     exampleText = previewText
 
-    // Background
+    // Clear Pixi Canvas & set background
+    clearPixiCanvas(app)
     setAppBackground(colour)
 
     // XML text display
@@ -113,6 +114,10 @@ async function submitInputValues() {
 
 function setAppBackground(colour) {
     app.renderer.background.color = colour
+}
+
+function clearPixiCanvas(app) {
+    app.stage.removeChildren()
 }
 
 function addPlaceholderText(app) {
