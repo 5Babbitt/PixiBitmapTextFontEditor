@@ -1,6 +1,16 @@
 /* eslint-disable no-undef */
 /**
- * [ ] Load and display bitmapText
+ * REF LINKS: 
+ * PIXI v7:
+ * https://pixijs.com/7.x/examples/text/bitmap-text
+ * https://pixijs.download/v7.x/docs/PIXI.BitmapText.html
+ * https://pixijs.download/v7.x/docs/PIXI.BitmapFont.html
+ * 
+ * Vite: 
+ * https://vite.dev/guide/static-deploy#github-pages
+ * 
+ * [X] Load and display bitmapText
+ * [ ] Load and display on GithubPages
  */
 
 import { Application, Assets, BitmapText } from "pixi.js"
