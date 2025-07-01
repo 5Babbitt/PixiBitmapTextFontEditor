@@ -16,7 +16,7 @@ import { Application, Assets, BitmapText } from "pixi.js"
 
   	canvas.appendChild(app.view)
 
-	await Assets.load('/assets/FNTBaseBonus01a.xml').then(() => {
+	await Assets.load('./public/assets/FNTBaseBonus01a.xml').then(() => {
 		const bitmapFontText = new BitmapText('0123456789,.', {
 			fontName: 'FNTBaseBonus01a',
 			fontSize: 36,
