@@ -16,26 +16,19 @@ import { Application, Assets, BitmapText } from "pixi.js"
 
   	canvas.appendChild(app.view)
 
-	await Assets.load('/FNTBaseBonus01a.xml').then(() => {
+	await Assets.load('/assets/FNTBaseBonus01a.xml').then(() => {
 		const bitmapFontText = new BitmapText('0123456789,.', {
 			fontName: 'FNTBaseBonus01a',
 			fontSize: 36,
 			align: "center"
 		})
+		
+		bitmapFontText.pivot.x = bitmapFontText.width / 2
+		bitmapFontText.pivot.y = bitmapFontText.height / 2
 
-  		bitmapFontText.x = 50;
-  		bitmapFontText.y = 200;
+  		bitmapFontText.x = app.screen.width / 2
+  		bitmapFontText.y = app.screen.height / 2
 
-		app.stage.addChild(centerComponent(bitmapFontText, app))
+		app.stage.addChild(bitmapFontText)
 	})
 }) ()
-
-function centerComponent(component, app) {
-	component.pivot.x = component.width / 2
-	component.pivot.y = component.height / 2
-
-	component.x = app.screen.width / 2
-	component.y = app.screen.height / 2
-
-	return component
-}
