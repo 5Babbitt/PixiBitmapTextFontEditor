@@ -25,3 +25,4 @@ dist-ssr
 
 .assetpack
 src/manifest.json
+vite.config.js
