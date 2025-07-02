@@ -1,6 +1,6 @@
-import js from '@eslint/js';
-import globals from 'globals';
-import { defineConfig } from 'eslint/config';
+import js from '@eslint/js'
+import globals from 'globals'
+import { defineConfig } from 'eslint/config'
 
 
 export default defineConfig([
@@ -36,10 +36,10 @@ export default defineConfig([
             'no-trailing-spaces': 'error',
 
             // Semicolons
-            'semi': ['error', 'always'],
+            'semi': ['error', 'never'],
             'quotes': ['error', 'single'],
 
             'comma-dangle': ['error', 'always-multiline'],
         },
     },
-]);
+])
