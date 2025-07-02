@@ -37,8 +37,30 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
+      
+      # Debug: Check source files before build
+      - name: Debug - List source files
+        run: |
+          echo "=== Root directory ==="
+          ls -la
+          echo "=== Public directory ==="
+          ls -la public/ || echo "No public directory"
+          echo "=== Public/assets directory ==="
+          ls -la public/assets/ || echo "No public/assets directory"
+      
       - name: Build
         run: npm run build
+      
+      # Debug: Check built files after build
+      - name: Debug - List built files
+        run: |
+          echo "=== Dist directory ==="
+          ls -la dist/
+          echo "=== Dist/assets directory ==="
+          ls -la dist/assets/ || echo "No dist/assets directory"
+          echo "=== All files in dist recursively ==="
+          find dist/ -type f
+      
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
