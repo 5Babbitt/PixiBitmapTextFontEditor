@@ -8,13 +8,14 @@
  * Vite:
  * https://vite.dev/guide/static-deploy#github-pages
  *
- * [X] Load and display bitmapText
- * [X] Load and display on GithubPages
  * [X] import pixi
  * [X] pixi viewport
  * [X] image upload and display
  * [X] xml upload, view
+ * [X] Load and display bitmapText
+ * [X] Load and display on GithubPages
  * [ ] xml parsing
+ * [ ] use uploaded text and img to make bitmap font
  * [ ] xml edit, save, download
  * [ ] reset pixi scene
  * [ ] get font family name from xml file
