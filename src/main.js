@@ -22,8 +22,8 @@
  *
  */
 
-import { Application, Assets, BitmapText } from 'pixi.js'
-	
+import {Application, Assets, BitmapFont, BitmapText, Texture} from 'pixi.js'
+
 let app
 let xmlData
 let textureAtlas
@@ -50,26 +50,38 @@ async function startPixi () {
 		height: canvas.offsetHeight,
 		width: canvas.offsetWidth,
 	})
-		
+
 	canvas.appendChild(app.view)
 }
 
-async function submitInputValues() { 
+async function submitInputValues() {
     const imgFile = inputs.img.files[0]
     const xmlFile = inputs.xml.files[0]
     const colour = inputs.colour.value
     const previewText = inputs.text.value
 
 	const imgURL = URL.createObjectURL(imgFile)
-	const xmlText = await getXMLText(xmlFile)
+	xmlData = await getXMLText(xmlFile)
+
+	const imgTexture = Texture.from(imgURL)
 
     outputs.textureAtlas.src = imgURL
-	outputs.xml.value = xmlText
+	outputs.xml.value = xmlData
 
 	clearPixiCanvas()
 
 	setBackgroundColour(colour)
-	await addBitmapText(previewText, xmlText, imgURL)
+	await addBitmapText(previewText, xmlData, imgTexture)
+
+	URL.revokeObjectURL(imgURL)
+}
+
+function updateBitmapText () {
+
+}
+
+function updateXMLData () {
+	xmlData = outputs.xml.value
 }
 
 // Component Helpers
@@ -84,6 +96,19 @@ function centerComponent (component) {
 }
 
 async function addBitmapText (text, xml, img) {
+	// Create Bitmap Font
+	// await createPlaceholderBitmapText(text)
+	const bitmapFont = BitmapFont.from('Uploaded Font', xml, img)
+
+	const bitmapFontText = new BitmapText(text, {
+		fontName: 'Uploaded Font',
+		fontStyle: 36
+	})
+
+	app.stage.addChild(centerComponent(bitmapFontText))
+}
+
+async function createPlaceholderBitmapText (text){
 	await Assets.load('./assets/FNTBaseBonus01a.xml').then(() => {
 		const bitmapFontText = new BitmapText(text, {
 			fontName: 'FNTBaseBonus01a',
@@ -93,8 +118,6 @@ async function addBitmapText (text, xml, img) {
 
 		app.stage.addChild(centerComponent(bitmapFontText))
 	})
-
-	// Create Bitmap Font
 }
 
 function createBitmapFont (xml, img) {
