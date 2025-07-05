@@ -14,44 +14,46 @@
  * [X] xml upload, view
  * [X] Load and display bitmapText
  * [X] Load and display on GithubPages
- * [ ] xml parsing
- * [ ] use uploaded text and img to make bitmap font
- * [ ] xml edit, save, download
- * [ ] reset pixi scene
- * [ ] get font family name from xml file
+ * [X] xml parsing
+ * [X] use uploaded text and img to make bitmap font
+ * [X] reset pixi scene
+ * [X] get font family name from xml file
+ * [ ] xml edit
+ * [ ] xml save
+ * [ ] xml export
  *
  */
 
-import {Application, Assets, BitmapFont, BitmapText, Texture} from 'pixi.js'
+import { Application, BitmapFont, BitmapText, Texture } from 'pixi.js'
 
 let app
 let xmlData
-let textureAtlas
+let imgURL
 
 const inputs = {
-	img: document.getElementById('textureAtlasInput'),
-	xml: document.getElementById('xmlInput'),
-	colour: document.getElementById('colourInput'),
-	text: document.getElementById('textInput'),
-	submit: document.getElementById('submit'),
+    img: document.getElementById('textureAtlasInput'),
+    xml: document.getElementById('xmlInput'),
+    colour: document.getElementById('colourInput'),
+    text: document.getElementById('textInput'),
+    submit: document.getElementById('submit'),
 }
 
 const outputs = {
-	xml: document.getElementById('xmlEditorTextArea'),
-	textureAtlas: document.getElementById('textureAtlasOutput'),
+    xml: document.getElementById('xmlEditorTextArea'),
+    textureAtlas: document.getElementById('textureAtlasOutput'),
 }
 
 const canvas = document.getElementById('pixiContainer')
 
-async function startPixi () {
-	app = new Application({
-		background: inputs.colour.value,
-		resizeTo: canvas,
-		height: canvas.offsetHeight,
-		width: canvas.offsetWidth,
-	})
+async function startPixi() {
+    app = new Application({
+        background: inputs.colour.value,
+        resizeTo: canvas,
+        height: canvas.offsetHeight,
+        width: canvas.offsetWidth,
+    })
 
-	canvas.appendChild(app.view)
+    canvas.appendChild(app.view)
 }
 
 async function submitInputValues() {
@@ -60,76 +62,66 @@ async function submitInputValues() {
     const colour = inputs.colour.value
     const previewText = inputs.text.value
 
-	const imgURL = URL.createObjectURL(imgFile)
-	xmlData = await getXMLText(xmlFile)
-
-	const imgTexture = Texture.from(imgURL)
-
+    imgURL = URL.createObjectURL(imgFile)
+    outputs.xml.value = await getXMLText(xmlFile)
     outputs.textureAtlas.src = imgURL
-	outputs.xml.value = xmlData
 
-	clearPixiCanvas()
+    updateXMLData()
+    clearPixiCanvas()
+    setBackgroundColour(colour)
 
-	setBackgroundColour(colour)
-	await addBitmapText(previewText, xmlData, imgTexture)
-
-	URL.revokeObjectURL(imgURL)
+    const bitmapFont = await loadBitmapFont(parseXMLObject(xmlData),  await Texture.fromURL(imgURL))
+    await addBitmapText(previewText, bitmapFont)
 }
 
-function updateBitmapText () {
-
-}
-
-function updateXMLData () {
-	xmlData = outputs.xml.value
+function updateXMLData() {
+    xmlData = outputs.xml.value
 }
 
 // Component Helpers
-function centerComponent (component) {
-	component.pivot.x = component.width / 2
-	component.pivot.y = component.height / 2
+function centerComponent(component) {
+    component.pivot.x = component.width / 2
+    component.pivot.y = component.height / 2
+    component.x = app.screen.width / 2
+    component.y = app.screen.height / 2
 
-	component.x = app.screen.width / 2
-	component.y = app.screen.height / 2
-
-	return component
+    return component
 }
 
-async function addBitmapText (text, xml, img) {
-	// Create Bitmap Font
-	// await createPlaceholderBitmapText(text)
-	const bitmapFont = BitmapFont.from('Uploaded Font', xml, img)
+async function addBitmapText(text, bitmapFont) {
+    // Create Bitmap Font
+    const bitmapFontText = new BitmapText(text, {
+        fontName: bitmapFont,
+        fontSize: 36,
+        align: 'center',
+    })
 
-	const bitmapFontText = new BitmapText(text, {
-		fontName: 'Uploaded Font',
-		fontStyle: 36
-	})
-
-	app.stage.addChild(centerComponent(bitmapFontText))
+    app.stage.addChild(centerComponent(bitmapFontText))
 }
 
-async function createPlaceholderBitmapText (text){
-	await Assets.load('./assets/FNTBaseBonus01a.xml').then(() => {
-		const bitmapFontText = new BitmapText(text, {
-			fontName: 'FNTBaseBonus01a',
-			fontSize: 36,
-			align: 'center',
-		})
+async function loadBitmapFont(xmlDoc, imageTexture) {
+    const fontName = xmlDoc.querySelector('info').getAttribute('face')
 
-		app.stage.addChild(centerComponent(bitmapFontText))
-	})
+    BitmapFont.install(xmlDoc, imageTexture, true)
+    const availableFonts = BitmapFont.available
+
+    console.log({ fontName, availableFonts })
+    return fontName
 }
 
-function createBitmapFont (xml, img) {
-
-}
-
-function clearPixiCanvas () {
+function clearPixiCanvas() {
     app.stage.removeChildren()
 }
 
-function setBackgroundColour (colour) {
+function setBackgroundColour(colour) {
     app.renderer.background.color = colour
+}
+
+function parseXMLObject(xmlContent) {
+    const parser = new DOMParser()
+    const xmlDoc = parser.parseFromString(xmlContent, 'text/xml')
+
+    return xmlDoc
 }
 
 async function getXMLText(file) {
@@ -137,12 +129,9 @@ async function getXMLText(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader()
 
-            reader.onload = (event) => {
-                resolve(event.target.result)
-            }
-
+            reader.onload = (event) => resolve(event.target.result)
             reader.onerror = () => reject(new Error('Failed to read file'))
-			reader.readAsText(file)
+            reader.readAsText(file)
         })
     } catch (error) {
         return `Error: Unable to load xml file\n${error}`
