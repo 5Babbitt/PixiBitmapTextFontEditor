@@ -106,7 +106,7 @@ body {
     box-shadow: 2px 2px 0.5rem 0.0625rem var(--bgCol);
 }
 
-#textInput {
+.submitButton, #textInput {
     color: var(--bgCol);
 }
 

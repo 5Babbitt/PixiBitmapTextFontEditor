@@ -8,6 +8,7 @@
  * Vite:
  * https://vite.dev/guide/static-deploy#github-pages
  *
+ * TODO:
  * [X] import pixi
  * [X] pixi viewport
  * [X] image upload and display
@@ -18,10 +19,14 @@
  * [X] use uploaded text and img to make bitmap font
  * [X] reset pixi scene
  * [X] get font family name from xml file
- * [ ] xml edit
+ * [X] xml edit
  * [ ] xml save
  * [ ] xml export
  *
+ * Nice to haves
+ * [ ] Text Counter
+ * [ ] XML syntax hightlighting
+ * [ ] upload background images
  */
 
 import { Application, BitmapFont, BitmapText, Texture } from 'pixi.js'
@@ -36,6 +41,7 @@ const inputs = {
     colour: document.getElementById('colourInput'),
     text: document.getElementById('textInput'),
     submit: document.getElementById('submit'),
+    update: document.getElementById('update'),
 }
 
 const outputs = {
@@ -57,21 +63,25 @@ async function startPixi() {
 }
 
 async function submitInputValues() {
+    // Upload Image
     const imgFile = inputs.img.files[0]
-    const xmlFile = inputs.xml.files[0]
-    const colour = inputs.colour.value
-    const previewText = inputs.text.value
-
     imgURL = URL.createObjectURL(imgFile)
-    outputs.xml.value = await getXMLText(xmlFile)
     outputs.textureAtlas.src = imgURL
 
+    // Upload XML
+    const xmlFile = inputs.xml.files[0]
+    outputs.xml.value = await getXMLText(xmlFile)
+
+    await updateBitmapText()
+}
+
+async function updateBitmapText() {
     updateXMLData()
     clearPixiCanvas()
-    setBackgroundColour(colour)
+    setBackgroundColour(inputs.colour.value)
 
     const bitmapFont = await loadBitmapFont(parseXMLObject(xmlData),  await Texture.fromURL(imgURL))
-    await addBitmapText(previewText, bitmapFont)
+    await addBitmapText(inputs.text.value, bitmapFont)
 }
 
 function updateXMLData() {
@@ -92,7 +102,6 @@ async function addBitmapText(text, bitmapFont) {
     // Create Bitmap Font
     const bitmapFontText = new BitmapText(text, {
         fontName: bitmapFont,
-        fontSize: 36,
         align: 'center',
     })
 
@@ -144,3 +153,4 @@ async function getXMLText(file) {
 
 // Input Events
 inputs.submit.addEventListener('click', submitInputValues)
+inputs.update.addEventListener('click', updateBitmapText)
